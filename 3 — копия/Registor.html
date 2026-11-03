@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amanah - Авторизация и Регистрация</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Шапка сайта -->
+<header class="site-header">
+  <div class="logo">
+    <a href="index.html">Amanah</a>
+  </div>
+  <nav class="menu">
+    <ul>
+      <li><a href="index.html">Карты</a></li>
+      <li><a >Услуги</a></li>
+      <li><a >Контакты</a></li>
+      <li><a class="btn-Regist" onclick="switchTab('login')">Вход</a></li>
+      <li><a class="btn-Regist" onclick="switchTab('register')">Регистрация</a></li> 
+    </ul>
+  </nav>
+</header>
+
+<main class="auth-wrapper">
+  <div class="auth-card">
+    
+    <!-- Переключатель видов (Вход / Регистрация) -->
+    <div class="auth-tabs">
+      <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Вход</button>
+      <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Регистрация</button>
+    </div>
+
+    <div class="auth-content">
+      
+      <!-- ФОРМА ВХОДА  -->
+      <form id="form-login" onsubmit="handleLogin(event)" novalidate>
+        <fieldset>
+          <legend>Авторизация</legend>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="login-email">Электронная почта *</label>
+              <input type="email" id="login-email" placeholder="example@mail.com" required>
+              <span class="error-msg">Введите корректный E-mail</span>
+            </div>
+            
+            <div class="form-group full-width">
+              <label for="login-password">Пароль *</label>
+              <input type="password" id="login-password" placeholder="••••••••" required minlength="8">
+              <span class="error-msg">Введите пароль</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <button type="submit" class="btn-submit">Войти в аккаунт</button>
+      </form>
+
+      <!-- ФОРМА РЕГИСТРАЦИИ  -->
+      <form id="form-register" style="display: none;" onsubmit="handleRegister(event)" novalidate>
+        
+        <!-- Блок 1: Личные данные -->
+        <fieldset>
+          <legend>1. Личные данные</legend>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="reg-lastname">Фамилия *</label>
+              <input type="text" id="reg-lastname" placeholder="Чей-то" required minlength="2">
+              <span class="error-msg">Поле обязательно для заполнения (мин. 2 символа)</span>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-firstname">Имя *</label>
+              <input type="text" id="reg-firstname" placeholder="Чей-то" required minlength="2">
+              <span class="error-msg">Поле обязательно для заполнения (мин. 2 символа)</span>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-dob">Дата рождения *</label>
+              <input type="date" id="reg-dob" required>
+              <span class="error-msg">Укажите дату рождения</span>
+            </div>
+
+            <div class="form-group">
+              <label>Предпочитаемое обращение / Пол</label>
+              <div class="radio-group">
+                <label><input type="radio" name="gender" value="Мужской" checked> Муж.</label>
+                <label><input type="radio" name="gender" value="Женский"> Жен.</label>
+                <label><input type="radio" name="gender" value="Гендерфлюкс"> Гендерфлюкс.</label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Блок 2: Контактная информация и локация -->
+        <fieldset>
+          <legend>2. Контактная информация</legend>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="reg-email">Электронная почта *</label>
+              <input type="email" id="reg-email" placeholder="user@domain.com" required>
+              <span class="error-msg">Введите корректный E-mail</span>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-phone">Номер телефона *</label>
+              <input type="tel" id="reg-phone" placeholder="+7 (777) 000-00-00" pattern="^\+?[0-9\s\-\(\)]{10,18}$" required>
+              <span class="error-msg">Формат: +7 (XXX) XXX-XX-XX</span>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-country">Страна проживания *</label>
+              <select id="reg-country" required>
+                <option value="" disabled selected>Выберите страну...</option>
+                <option value="Казахстан">Казахстан</option>
+                <option value="Кыргызстан">Кыргызстан</option>
+                <option value="Узбекистан">Узбекистан</option>
+                <option value="Монголия">Монголия</option>
+                <option value="Турция">Турция</option>
+                <option value="Египет">Египет</option>
+              </select>
+              <span class="error-msg">Выберите страну из списка</span>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-city">Город *</label>
+              <input type="text" id="reg-city" placeholder="Павлодар" required>
+              <span class="error-msg">Укажите ваш город</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Блок 3: Безопасность и настройки -->
+        <fieldset>
+          <legend>3. Безопасность и учетная запись</legend>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="reg-pass">Пароль *</label>
+              <input type="password" id="reg-pass" placeholder="Мин. 8 символов, 1 цифра, 1 заглавная" required>
+              <span class="error-msg" id="pass-err-text">Мин. 8 символов, заглавная буква и цифра</span>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-confirm-pass">Повтор пароля *</label>
+              <input type="password" id="reg-confirm-pass" placeholder="Повторите пароль" required>
+              <span class="error-msg" id="confirm-err-text">Пароли не совпадают</span>
+            </div>
+
+            <!-- Дополнительные элементы  -->
+            <div class="form-group">
+              <label for="reg-category">Любимая категория карт</label>
+              <select id="reg-category">
+                <option value="Обычные карт">Обычные карты</option>
+                <option value="Ultra Rare / Holo" selected>Ultra Rare / Holo</option>
+                <option value="Special Illustration Rare (SIR)">Special Illustration Rare (SIR)</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <div class="checkbox-group">
+                <input type="checkbox" id="reg-terms" required>
+                <label for="reg-terms">Я согласен с правилами сайта и прочитал соглашение, и т.д *</label>
+              </div>
+              <span class="error-msg" id="terms-err-text">Необходимо согласиться с правилами, которые были не прочитаны</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <button type="submit" class="btn-submit">Завершить регистрацию</button>
+      </form>
+
+      <!--  ЭКРАН УСПЕХА  -->
+      <div id="success-screen" class="success-screen">
+        <div class="success-card">
+          <h2>Авторизация пройдена</h2>
+          <p id="success-message">Вы успешно вошли в систему!</p>
+          <div style="margin-top: 20px;">
+            <a href="index.html" class="btn" style="text-decoration: none;">На главную страницу</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<!-- Подвал сайта -->
+<footer>
+  <div class="footer-content">
+    <div class="footer-col">
+      <h3>Amanah</h3>
+      <p>Перепродажа карт покемонов.</p>
+    </div>
+    
+    <div class="footer-col">
+      <h3>Навигация</h3>
+      <ul>
+        <li><a href="index.html">Карты</a></li>
+        <li><a href="#">Услуги</a></li>
+        <li><a href="#">Контакты</a></li>
+      </ul>
+    </div>
+    
+    <div class="footer-col">
+      <h3>Контакты</h3>
+      <address>
+        Email: <a href="mailto:info@Amanah.com">info@Amanah.com</a><br>
+        Телефон: +7 (999) 078-90-60
+      </address>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <p>&copy; 2026 Amanah. Все права защищены.</p>
+  </div>
+</footer>
+
+<!-- Скрипты взаимодействия и валидации -->
+<script>
+  // Переключение табов "Вход / Регистрация"
+  function switchTab(tab) {
+    const loginForm = document.getElementById('form-login');
+    const regForm = document.getElementById('form-register');
+    const tabLogin = document.getElementById('tab-login');
+    const tabReg = document.getElementById('tab-register');
+    const successScreen = document.getElementById('success-screen');
+
+    successScreen.style.display = 'none';
+
+    if (tab === 'login') {
+      loginForm.style.display = 'block';
+      regForm.style.display = 'none';
+      tabLogin.classList.add('active');
+      tabReg.classList.remove('active');
+    } else {
+      loginForm.style.display = 'none';
+      regForm.style.display = 'block';
+      tabReg.classList.add('active');
+      tabLogin.classList.remove('active');
+    }
+  }
+
+  // Сброс ошибок под полями
+  function clearErrors(form) {
+    const groups = form.querySelectorAll('.form-group');
+    groups.forEach(g => g.classList.remove('error'));
+  }
+
+  // Обработка отправки формы Входа
+  function handleLogin(event) {
+    event.preventDefault();
+    const form = document.getElementById('form-login');
+    clearErrors(form);
+
+    const email = document.getElementById('login-email');
+    const pass = document.getElementById('login-password');
+    let valid = true;
+
+    if (!email.value || !email.checkValidity()) {
+      email.closest('.form-group').classList.add('error');
+      valid = false;
+    }
+
+    if (!pass.value || pass.value.length < 8) {
+      pass.closest('.form-group').classList.add('error');
+      valid = false;
+    }
+
+    if (valid) {
+      showSuccess(`С возвращением, ${email.value}! Вход выполнен успешно.`);
+    }
+  }
+
+  // Обработка отправки формы Регистрации (Валидация по Заданию 4 и 5)
+  function handleRegister(event) {
+    event.preventDefault();
+    const form = document.getElementById('form-register');
+    clearErrors(form);
+
+    let isValid = true;
+
+    // Обязательные поля для стандартной проверки
+    const requiredInputs = form.querySelectorAll('input[required], select[required]');
+    requiredInputs.forEach(input => {
+      if (!input.value || !input.checkValidity()) {
+        input.closest('.form-group').classList.add('error');
+        isValid = false;
+      }
+    });
+
+    // Проверка условий пароля (JavaScript)
+    const pass = document.getElementById('reg-pass').value;
+    const confirmPass = document.getElementById('reg-confirm-pass').value;
+    const passGroup = document.getElementById('reg-pass').closest('.form-group');
+    const confirmGroup = document.getElementById('reg-confirm-pass').closest('.form-group');
+
+    const hasMinLength = pass.length >= 8;
+    const hasDigit = /\d/.test(pass);
+    const hasUpper = /[A-ZА-Я]/.test(pass);
+
+    if (!hasMinLength || !hasDigit || !hasUpper) {
+      passGroup.classList.add('error');
+      isValid = false;
+    }
+
+    if (pass !== confirmPass || confirmPass === "") {
+      confirmGroup.classList.add('error');
+      isValid = false;
+    }
+
+    // Согласие с правилами
+    const terms = document.getElementById('reg-terms');
+    if (!terms.checked) {
+      terms.closest('.form-group').classList.add('error');
+      isValid = false;
+    }
+
+    // Экран успешной регистрации при правильном заполнении
+    if (isValid) {
+      const firstName = document.getElementById('reg-firstname').value;
+      const email = document.getElementById('reg-email').value;
+      const category = document.getElementById('reg-category').value;
+      
+      showSuccess(`Поздравляем, ${firstName}! Регистрация прошла успешно.<br>Ваш e-mail: <b>${email}</b><br>Предпочитаемая категория: <b>${category}</b>`);
+    }
+  }
+
+  // Отображение экрана успеха
+  function showSuccess(msg) {
+    document.getElementById('form-login').style.display = 'none';
+    document.getElementById('form-register').style.display = 'none';
+    const successScreen = document.getElementById('success-screen');
+    document.getElementById('success-message').innerHTML = msg;
+    successScreen.style.display = 'block';
+  }
+</script>
+
+</body>
+</html>
